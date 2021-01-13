@@ -1,6 +1,6 @@
 import { URI } from "./config";
 
-export default async () => {
+const getAuthorsService = async () => {
 
   const response = await fetch(URI('authors'));
   const result = await response.json();
@@ -11,4 +11,8 @@ export default async () => {
     return [];
   }
 
+};
+
+export {
+  getAuthorsService,
 };

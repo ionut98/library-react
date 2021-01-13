@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import './App.css';
-import getAuthorsService from './services/getAuthorsService';
 import Menu from './components/Menu';
 
 import { Grid, makeStyles, Typography } from '@material-ui/core';
 import { LocalLibrary } from '@material-ui/icons';
+import { Context, Provider } from './context/ApplicationContext';
+import Authors from './components/Authors';
 
 const useStyles = makeStyles({
   centered: {
@@ -23,13 +24,6 @@ const App = () => {
 
   const classes = useStyles();
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const authors = await getAuthorsService();
-  //     console.log(authors);
-  //   })();
-  // }, []);
-
   return (
     <Grid container spacing={3} className={classes.centered}>
       <Grid item xs={12} className={classes.centered}>
@@ -37,7 +31,22 @@ const App = () => {
           <LocalLibrary style={{ fontSize: 30 }}/> <span className={classes.eStyle}>e</span>Library
         </Typography>
       </Grid>
-      <Menu />  
+      <Provider>
+        <Context.Consumer>
+          {context => {
+            switch (context.view) {
+              case 'menu':
+                return <Menu />;
+              case 'authors':
+                return <Authors />;
+              case 'books':
+                return <Menu />;
+              default:
+                return;
+            }
+          }}
+        </Context.Consumer>
+      </Provider>
     </Grid>
   );
 }

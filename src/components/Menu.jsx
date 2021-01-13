@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useContext } from 'react';
+
 import { Button, Grid, makeStyles } from '@material-ui/core';
 import { MenuBook, PermIdentity } from '@material-ui/icons';
+import { Context } from '../context/ApplicationContext';
 
 const useStyles = makeStyles({
   menuButton: {
@@ -25,12 +27,17 @@ const useStyles = makeStyles({
 
 const Main = () => {
 
+  const context = useContext(Context);
+  const {
+    setView,
+  } = context;
+
   const classes = useStyles();
 
   return (
     <>
       <Grid item xs={2} className={classes.menuContainer}>
-        <Button fullWidth className={classes.menuButton}>
+        <Button fullWidth className={classes.menuButton} onClick={() => setView('authors')}>
           <Grid container>
             <Grid item xs={12}>
               <PermIdentity className={classes.iconStyle}/> 
@@ -42,7 +49,7 @@ const Main = () => {
         </Button>
       </Grid>
       <Grid item xs={2} className={classes.menuContainer}>
-        <Button fullWidth className={classes.menuButton}>
+        <Button fullWidth className={classes.menuButton} onClick={() => setView('books')}>
           <Grid container>
             <Grid item xs={12}>
               <MenuBook className={classes.iconStyle}/> 
