@@ -1,0 +1,4 @@
+[0113/082255.624:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[0113/082255.627:ERROR:filesystem_win.cc(129)] GetFileAttributes C:\Users\ionut\AppData\Local\Google\Chrome\User Data\Crashpad\attachments\0e09e7d2-2b8c-479c-b642-00fb509175e7: The system cannot find the path specified. (0x3)
+[0113/082255.629:ERROR:filesystem_win.cc(129)] GetFileAttributes C:\Users\ionut\AppData\Local\Google\Chrome\User Data\Crashpad\attachments\10c84f3e-cb3b-4243-86de-8dbbd749b2cd: The system cannot find the path specified. (0x3)
+[0113/082255.632:ERROR:filesystem_win.cc(129)] GetFileAttributes C:\Users\ionut\AppData\Local\Google\Chrome\User Data\Crashpad\attachments\b4a8e923-cc55-4ef5-a7f6-fd298357624b: The system cannot find the path specified. (0x3)

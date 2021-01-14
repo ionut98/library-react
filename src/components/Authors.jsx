@@ -1,22 +1,68 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState, forwardRef, useContext } from 'react';
 
 import MaterialTable from 'material-table';
-import { PersonAdd, Delete } from '@material-ui/icons';
-import { Typography } from '@material-ui/core';
+import { PersonAdd, Delete, MenuBook } from '@material-ui/icons';
+import { Typography, Grid, Button, CircularProgress } from '@material-ui/core';
 import { getAuthorsService } from '../services/getAuthorsService';
+
+import { Context } from '../context/ApplicationContext';
+
+import AddBox from '@material-ui/icons/AddBox';
+import ArrowUpward from '@material-ui/icons/ArrowUpward';
+import Check from '@material-ui/icons/Check';
+import ChevronLeft from '@material-ui/icons/ChevronLeft';
+import ChevronRight from '@material-ui/icons/ChevronRight';
+import Clear from '@material-ui/icons/Clear';
+import DeleteOutline from '@material-ui/icons/DeleteOutline';
+import Edit from '@material-ui/icons/Edit';
+import FilterList from '@material-ui/icons/FilterList';
+import FirstPage from '@material-ui/icons/FirstPage';
+import LastPage from '@material-ui/icons/LastPage';
+import Remove from '@material-ui/icons/Remove';
+import SaveAlt from '@material-ui/icons/SaveAlt';
+import Search from '@material-ui/icons/Search';
+import ViewColumn from '@material-ui/icons/ViewColumn';
+
+const tableIcons = {
+  Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
+  Check: forwardRef((props, ref) => <Check {...props} ref={ref} />),
+  Clear: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+  Delete: forwardRef((props, ref) => <DeleteOutline {...props} ref={ref} />),
+  DetailPanel: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+  Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
+  Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
+  Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
+  FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
+  LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
+  NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
+  PreviousPage: forwardRef((props, ref) => <ChevronLeft {...props} ref={ref} />),
+  ResetSearch: forwardRef((props, ref) => <Clear {...props} ref={ref} />),
+  Search: forwardRef((props, ref) => <Search {...props} ref={ref} />),
+  SortArrow: forwardRef((props, ref) => <ArrowUpward {...props} ref={ref} />),
+  ThirdStateCheck: forwardRef((props, ref) => <Remove {...props} ref={ref} />),
+  ViewColumn: forwardRef((props, ref) => <ViewColumn {...props} ref={ref} />)
+};
 
 const Authors = () => {
 
+  const context = useContext(Context);
+  const {
+    setView,
+  } = context;
   const [authorsList, setAuthorsList] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
       const authors = await getAuthorsService();
       setAuthorsList(authors);
+      setTimeout(() => {
+        setLoading(false);
+      }, 1500);
     })();
   }, []);
   
-  const columns = useRef([
+  const columns = useMemo(() => [
     { 
       title: 'ID', 
       field: 'id',
@@ -60,48 +106,65 @@ const Authors = () => {
         paddingLeft: 10,
       },
     },
-  ]);
+  ], []);
 
   const addAuthor = (author) => {}
   const updateAuthor = (oldAuthor, newAuthor) => {}
   const deleteAuthor = (author) => {}
 
   return (
-    // <MaterialTable
-    //   options={{
-    //     actionsColumnIndex: 3,
-    //     search: false,
-    //     actionsCellStyle: {
-    //       color: '#3e4095',
-    //     },
-    //   }}
-    //   icons={{
-    //     Add: props => <PersonAdd color='primary' {...props}/>,
-    //     Delete: props => <Delete style={{ color: 'red' }} {...props}/>,
-    //   }}
-    //   title={
-    //     <Typography style={{ fontSize: 20, color: '#fdd835' }}>Authors</Typography>
-    //   }
-    //   columns={columns.current}
-    //   data={authorsList}
-    //   editable={{
-    //     onRowAdd: newData => addAuthor(newData), 
-    //     onRowUpdate: (newData, oldData) =>
-    //       updateAuthor(oldData, newData),
-    //     onRowDelete: oldData =>
-    //       deleteAuthor(oldData),
-    //   }}
-    // />
-    <MaterialTable
-      columns={[
-        { title: 'Adı', field: 'name' },
-        { title: 'Soyadı', field: 'surname' },
-        { title: 'Doğum Yılı', field: 'birthYear', type: 'numeric' },
-        { title: 'Doğum Yeri', field: 'birthCity', lookup: { 34: 'İstanbul', 63: 'Şanlıurfa' } }
-      ]}
-      data={[{ name: 'Mehmet', surname: 'Baran', birthYear: 1987, birthCity: 63 }]}
-      title="Demo Title"
-    />
+    !loading ?
+    <>
+      <Grid item xs={10}>
+        <MaterialTable
+          options={{
+            actionsColumnIndex: 3,
+            search: false,
+            actionsCellStyle: {
+              color: '#3e4095',
+            },
+          }}
+          icons={{
+            ...tableIcons,
+            Add: props => <PersonAdd color='primary' {...props}/>,
+            Delete: props => <Delete style={{ color: 'red' }} {...props}/>,
+          }}
+          title={
+            <Typography style={{ fontSize: 20, color: '#fdd835' }}>Authors</Typography>
+          }
+          columns={columns}
+          data={authorsList}
+          editable={{
+            onRowAdd: newData => addAuthor(newData), 
+            onRowUpdate: (newData, oldData) =>
+              updateAuthor(oldData, newData),
+            onRowDelete: oldData =>
+              deleteAuthor(oldData),
+          }}
+          />
+      </Grid>
+      <Grid item xs={3}>
+        <Button
+          fullWidth
+          variant='outlined'
+          startIcon={
+            <MenuBook 
+              style={{
+                color: '#fdd835',
+              }}
+            />
+          }
+          style={{
+            color: '#fff',
+            borderColor: '#fff',
+          }}
+          onClick={() => setView('books')}
+        >
+          BOOKS
+        </Button>
+      </Grid>
+    </>
+    : <CircularProgress style={{ color: '#fdd835' }}/>
   );
 
 };
