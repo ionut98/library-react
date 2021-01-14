@@ -180,6 +180,7 @@ const Books = () => {
       
       if (addResult) {
         await fetchBooks();
+        setSelectedAuthorsIds([]);
         setChangeAuthorsIntention(false);
         return resolve();
       } else {
@@ -212,6 +213,7 @@ const Books = () => {
 
       if (updateResult) {
         await fetchBooks();
+        setSelectedAuthorsIds([]);
         setChangeAuthorsIntention(false);
         return resolve();
       } else {
@@ -274,11 +276,14 @@ const Books = () => {
                   } = fieldProps
                   if (lookup) {
                     return <Button
-                      onClick={() => {
-                        setChangeAuthorsIntention(true);
-                        setOpenAuthorsDialog(true);
-                        setSelectedAuthorsIds(Authors ? Authors.map(author => author.id) : []);
-                      }}>
+                              onClick={() => {
+                                setChangeAuthorsIntention(true);
+                                setOpenAuthorsDialog(true);
+                                setSelectedAuthorsIds(Authors ? Authors.map(author => author.id) : []);
+                      }}
+                      variant='outlined'
+                      style={{ borderColor: '#fdd835' }}
+                    >
                       Authors
                     </Button>
                   } else {
@@ -295,7 +300,7 @@ const Books = () => {
               }}
               icons={{
                 ...tableIcons,
-                Add: props => <NoteAdd color='primary' {...props}/>,
+                Add: props => <NoteAdd style={{ color: '#fdd835' }} {...props}/>,
                 Delete: props => <Delete style={{ color: 'red' }} {...props}/>,
               }}
               title={
@@ -348,6 +353,7 @@ const Books = () => {
                     edge='start'
                     checked={selectedAuthorsIds.indexOf(author.id) !== -1}
                     disableRipple
+                    style={{ color: '#fdd835' }}
                   />
                 </ListItemIcon>
                 <ListItemText primary={`${author.FirstName} ${author.LastName}`} />

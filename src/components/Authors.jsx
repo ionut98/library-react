@@ -22,6 +22,9 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import ViewColumn from '@material-ui/icons/ViewColumn';
+import { addAuthorService } from '../services/addAuthor';
+import { deleteAuthorService } from '../services/deleteAuthor';
+import { updateAuthorService } from '../services/updateAuthor';
 
 const tableIcons = {
   Add: forwardRef((props, ref) => <AddBox {...props} ref={ref} />),
@@ -54,13 +57,17 @@ const Authors = () => {
 
   useEffect(() => {
     (async () => {
-      const authors = await getAuthorsService();
-      setAuthorsList(authors);
+      fetchAuthors();
       setTimeout(() => {
         setLoading(false);
       }, 1500);
     })();
   }, []);
+
+  const fetchAuthors = async () => {
+    const authors = await getAuthorsService();
+    setAuthorsList(authors);
+  };
   
   const columns = useMemo(() => [
     { 
@@ -108,9 +115,54 @@ const Authors = () => {
     },
   ], []);
 
-  const addAuthor = (author) => {}
-  const updateAuthor = (oldAuthor, newAuthor) => {}
-  const deleteAuthor = (author) => {}
+  const addAuthor = (author) =>
+    new Promise(async (resolve, reject) => {
+      
+      const addResult = await addAuthorService({
+        FirstName: author.FirstName,
+        LastName: author.LastName,
+      });
+    
+      if (addResult) {
+        await fetchAuthors();
+        return resolve();
+      } else {
+        return reject();
+      }
+    })
+
+  const updateAuthor = (oldAuthor, newAuthor) => 
+    new Promise(async (resolve, reject) => {
+        
+      const updateResult = await updateAuthorService({
+        id: oldAuthor.id,
+        FirstName: newAuthor.FirstName,
+        LastName: newAuthor.LastName,
+      });
+    
+      if (updateResult) {
+        await fetchAuthors();
+        return resolve();
+      } else {
+        return reject();
+      }
+    })
+    
+  const deleteAuthor = (author) =>
+    new Promise( async (resolve, reject) => {
+
+      const deleteResult = await deleteAuthorService({
+        id: author.id,
+      });
+
+      if (deleteResult) {
+        await fetchAuthors();
+        return resolve();
+      } else {
+        return reject();
+      }
+
+    });
 
   return (
     !loading ?
@@ -126,7 +178,7 @@ const Authors = () => {
           }}
           icons={{
             ...tableIcons,
-            Add: props => <PersonAdd color='primary' {...props}/>,
+            Add: props => <PersonAdd style={{ color: '#fdd835' }} {...props}/>,
             Delete: props => <Delete style={{ color: 'red' }} {...props}/>,
           }}
           title={
